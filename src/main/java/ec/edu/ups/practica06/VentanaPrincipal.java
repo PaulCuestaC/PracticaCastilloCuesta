@@ -4,6 +4,18 @@
  */
 package ec.edu.ups.practica06;
 
+import ec.edu.ups.practica06.Archivo.ControladorArchivo;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.Clock;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+
 /**
  *
  * @author Personal
@@ -13,8 +25,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form Ventana
      */
+    private ControladorArchivo controladorArchivo;
+
     public VentanaPrincipal() {
         initComponents();
+        controladorArchivo = new ControladorArchivo();
     }
 
     /**
@@ -31,7 +46,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnListarDirectorios = new javax.swing.JButton();
         btnListarDirectoriosOcultos = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtRuta = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tree = new javax.swing.JTree();
         jPanel1 = new javax.swing.JPanel();
@@ -40,11 +55,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        txtTamano = new javax.swing.JTextField();
+        txtPath = new javax.swing.JTextField();
+        txtPermisosLectura = new javax.swing.JTextField();
+        txtFechaModificacion = new javax.swing.JTextField();
+        txtPermisosEscritura = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         btnMostrarInformacion = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -55,11 +70,20 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenuSalir = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(204, 255, 204));
 
         jDesktopPane1.setBackground(new java.awt.Color(204, 255, 255));
+        jDesktopPane1.setForeground(new java.awt.Color(51, 51, 51));
+        jDesktopPane1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnListarArchivosOcultos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnListarArchivosOcultos.setText("Listar Archivos Ocultos ");
+        btnListarArchivosOcultos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListarArchivosOcultosActionPerformed(evt);
+            }
+        });
+        jDesktopPane1.add(btnListarArchivosOcultos, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 90, -1, -1));
 
         btnListarDirectorios.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnListarDirectorios.setText("Listar Directorios");
@@ -68,16 +92,27 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 btnListarDirectoriosActionPerformed(evt);
             }
         });
+        jDesktopPane1.add(btnListarDirectorios, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 96, -1, -1));
 
         btnListarDirectoriosOcultos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnListarDirectoriosOcultos.setText("Listar Directorios Ocultos");
+        btnListarDirectoriosOcultos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListarDirectoriosOcultosActionPerformed(evt);
+            }
+        });
+        jDesktopPane1.add(btnListarDirectoriosOcultos, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 90, -1, 20));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setText("Ruta");
+        jDesktopPane1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(291, 24, 51, -1));
+        jDesktopPane1.add(txtRuta, new org.netbeans.lib.awtextra.AbsoluteConstraints(382, 29, 357, 32));
 
         Tree.setBackground(new java.awt.Color(255, 204, 255));
         Tree.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jScrollPane1.setViewportView(Tree);
+
+        jDesktopPane1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 164, 236, 264));
 
         jPanel1.setBackground(new java.awt.Color(204, 255, 204));
         jPanel1.setForeground(new java.awt.Color(255, 204, 204));
@@ -92,19 +127,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel6.setText("Fecha ultima modificacion");
 
-        jTextField4.setText(" ");
+        txtPermisosLectura.setText(" ");
 
-        jTextField5.setText(" ");
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        txtFechaModificacion.setText(" ");
+        txtFechaModificacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                txtFechaModificacionActionPerformed(evt);
             }
         });
 
-        jTextField6.setText("  ");
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        txtPermisosEscritura.setText("  ");
+        txtPermisosEscritura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                txtPermisosEscrituraActionPerformed(evt);
             }
         });
 
@@ -127,13 +162,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(46, 46, 46)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField6)
-                            .addComponent(jTextField5)))
+                            .addComponent(txtPermisosLectura, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                            .addComponent(txtTamano)
+                            .addComponent(txtPath)
+                            .addComponent(txtPermisosEscritura)
+                            .addComponent(txtFechaModificacion)))
                     .addComponent(jLabel7))
-                .addContainerGap(113, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,98 +177,36 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTamano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPermisosLectura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPermisosEscritura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFechaModificacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37))
         );
 
+        jDesktopPane1.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 164, -1, -1));
+
         btnMostrarInformacion.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnMostrarInformacion.setText("Mostrar Informacion");
-
-        jDesktopPane1.setLayer(btnListarArchivosOcultos, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(btnListarDirectorios, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(btnListarDirectoriosOcultos, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jTextField1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(btnMostrarInformacion, javax.swing.JLayeredPane.DEFAULT_LAYER);
-
-        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
-        jDesktopPane1.setLayout(jDesktopPane1Layout);
-        jDesktopPane1Layout.setHorizontalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDesktopPane1Layout.createSequentialGroup()
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1))
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(btnListarDirectorios)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)))
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnListarArchivosOcultos)
-                        .addGap(106, 106, 106)
-                        .addComponent(btnListarDirectoriosOcultos)
-                        .addGap(94, 94, 94))
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGap(200, 200, 200)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGap(137, 137, 137)
-                        .addComponent(btnMostrarInformacion)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jDesktopPane1Layout.setVerticalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGap(26, 89, Short.MAX_VALUE)
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnMostrarInformacion)
-                        .addGap(18, 18, 18))
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnListarDirectorios)
-                            .addComponent(btnListarArchivosOcultos)
-                            .addComponent(btnListarDirectoriosOcultos))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
+        btnMostrarInformacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMostrarInformacionActionPerformed(evt);
+            }
+        });
+        jDesktopPane1.add(btnMostrarInformacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 430, -1, -1));
 
         jMenuBar1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         jMenuBar1.setToolTipText("");
@@ -252,14 +225,29 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jMenuEliminar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuEliminar.setText("Eliminar");
+        jMenuEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuEliminarActionPerformed(evt);
+            }
+        });
         jMenuGestionarDirectorio.add(jMenuEliminar);
 
         jMenuRenombrar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuRenombrar.setText("Renombrar");
+        jMenuRenombrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuRenombrarActionPerformed(evt);
+            }
+        });
         jMenuGestionarDirectorio.add(jMenuRenombrar);
 
         jMenuSalir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuSalir.setText("Salir");
+        jMenuSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuSalirActionPerformed(evt);
+            }
+        });
         jMenuGestionarDirectorio.add(jMenuSalir);
 
         jMenuBar1.add(jMenuGestionarDirectorio);
@@ -270,37 +258,192 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(jDesktopPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jDesktopPane1)
-                .addGap(14, 14, 14))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCrearActionPerformed
-        // TODO add your handling code here:
+        if (Tree.getLastSelectedPathComponent() == null) {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun archivo");
+        } else {
+            String nombre = JOptionPane.showInputDialog("Ingrese el nombre del archivo");
+            File archivo = new File(txtRuta.getText());
+            if (!archivo.exists()) {
+                String ruta = txtRuta.getText();
+                controladorArchivo.crearArchivo(ruta, nombre);
+
+                JOptionPane.showMessageDialog(this, "Se ha creado el archivo con el nombre: " + nombre);
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo crear");
+            }
+        }
+
     }//GEN-LAST:event_jMenuCrearActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+    private void txtPermisosEscrituraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPermisosEscrituraActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    }//GEN-LAST:event_txtPermisosEscrituraActionPerformed
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
+    private void txtFechaModificacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaModificacionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFechaModificacionActionPerformed
 
     private void btnListarDirectoriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarDirectoriosActionPerformed
-        // TODO add your handling code here:
+        if (txtRuta.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No ha ingresado ningun path");
+        } else {
+            File archivo = new File(txtRuta.getText());
+            if (archivo.exists()) {
+                String url = txtRuta.getText();
+                DefaultMutableTreeNode raiz = new DefaultMutableTreeNode(url);
+                DefaultTreeModel treeModel = new DefaultTreeModel(raiz);
+                Tree.setModel(treeModel);
+                controladorArchivo.AbrirDirectorio(url, raiz);
+            } else {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+            }
+
+        }
+
     }//GEN-LAST:event_btnListarDirectoriosActionPerformed
+
+    private void btnMostrarInformacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarInformacionActionPerformed
+        if (Tree.getLastSelectedPathComponent() == null) {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun archivo");
+        } else {
+            DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) Tree.getLastSelectedPathComponent();
+
+            TreeNode[] si = nodoSeleccionado.getPath();
+            String path = "";
+            for (TreeNode treeNode : si) {
+                path = path + "/" + treeNode;
+            }
+            String pathF = path.substring(1);
+
+            File archivo = new File(pathF);
+            txtPath.setText(archivo.getAbsolutePath());
+            txtTamano.setText(formatearTamañoArchivo(archivo.length()));
+            if (archivo.canRead()) {
+                txtPermisosLectura.setText("Puede leer");
+            } else {
+                txtPermisosLectura.setText("No puede leer");
+            }
+            if (archivo.canWrite()) {
+                txtPermisosEscritura.setText("Puede escribir");
+            } else {
+                txtPermisosEscritura.setText("No puede escribir");
+            }
+            Date yourDate = new Date(archivo.lastModified());
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            String formattedDate = formatter.format(yourDate);
+            txtFechaModificacion.setText(formattedDate);
+        }
+
+    }//GEN-LAST:event_btnMostrarInformacionActionPerformed
+
+    private void btnListarArchivosOcultosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarArchivosOcultosActionPerformed
+        if (txtRuta.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No ha ingresado ningun path");
+        } else {
+            File archivo = new File(txtRuta.getText());
+            if (archivo.exists()) {
+                String url = txtRuta.getText();
+                DefaultMutableTreeNode raiz = new DefaultMutableTreeNode(url);
+                DefaultTreeModel treeModel = new DefaultTreeModel(raiz);
+                Tree.setModel(treeModel);
+                controladorArchivo.listarArchivosOcultos(url, raiz);
+            } else {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+            }
+
+        }
+    }//GEN-LAST:event_btnListarArchivosOcultosActionPerformed
+
+    private void btnListarDirectoriosOcultosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarDirectoriosOcultosActionPerformed
+        if (txtRuta.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No ha ingresado ningun path");
+        } else {
+            File archivo = new File(txtRuta.getText());
+            if (archivo.exists()) {
+                String url = txtRuta.getText();
+                DefaultMutableTreeNode raiz = new DefaultMutableTreeNode(url);
+                DefaultTreeModel treeModel = new DefaultTreeModel(raiz);
+                Tree.setModel(treeModel);
+                controladorArchivo.listarDirectoriosOcultos(url, raiz);
+            } else {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+            }
+
+        }
+
+    }//GEN-LAST:event_btnListarDirectoriosOcultosActionPerformed
+
+    private void jMenuEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuEliminarActionPerformed
+        if (Tree.getLastSelectedPathComponent() == null) {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun archivo");
+        } else {
+            File archivo = new File(txtRuta.getText());
+            if (!archivo.exists()) {
+                DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) Tree.getLastSelectedPathComponent();
+                TreeNode[] seleccionado = nodoSeleccionado.getPath();
+                String path = "";
+                for (TreeNode treeNode : seleccionado) {
+                    path = path + "/" + treeNode;
+                }
+                String rutaFinal = path.substring(1);
+
+                int i = JOptionPane.showConfirmDialog(this, "Estas seguro?");
+                if (i == 0) {
+                    JOptionPane.showMessageDialog(this, "Se ha eliminado el archivo");
+                    controladorArchivo.eliminarArchivo(rutaFinal);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+            }
+        }
+    }//GEN-LAST:event_jMenuEliminarActionPerformed
+
+    private void jMenuRenombrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuRenombrarActionPerformed
+   if (Tree.getLastSelectedPathComponent() == null) {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun archivo");
+        } else {
+            File archivo = new File(txtRuta.getText());
+            if (archivo.exists()) {
+                String nombre = JOptionPane.showInputDialog("Ingrese el nombre a renombrar");
+                DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) Tree.getLastSelectedPathComponent();
+                TreeNode[] lista = nodoSeleccionado.getPath();
+                String ruta = "";
+                String rutaRen = "";
+                for (TreeNode treeNode : lista) {
+                    ruta = ruta + "/" + treeNode;
+                }
+                for (int i = 0; i < lista.length - 1; i++) {
+                    rutaRen = rutaRen + "/" + lista[i];
+                }
+                String rutaRenombradaFinal = rutaRen.substring(1);
+                String rutaFinal = ruta.substring(1);
+                controladorArchivo.renombrarArchivo(rutaRenombradaFinal, rutaFinal, nombre);
+             
+                JOptionPane.showConfirmDialog(this, "Se ha renombrado el archivo a: "+nombre);
+
+            } else {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+            }
+
+        }
+    }//GEN-LAST:event_jMenuRenombrarActionPerformed
+
+    private void jMenuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jMenuSalirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -338,6 +481,27 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
     }
 
+    public String formatearTamañoArchivo(long tamañoEnBytes) {
+        if (tamañoEnBytes < 1024) {
+            return tamañoEnBytes + " bytes";
+        } else if (tamañoEnBytes < 1024 * 1024) {
+            double tamañoEnKB = tamañoEnBytes / 1024.0;
+            return formatearDecimal(tamañoEnKB) + " KB";
+        } else if (tamañoEnBytes < 1024 * 1024 * 1024) {
+            double tamañoEnMB = tamañoEnBytes / (1024.0 * 1024);
+            return formatearDecimal(tamañoEnMB) + " MB";
+        } else {
+            double tamañoEnGB = tamañoEnBytes / (1024.0 * 1024 * 1024);
+            return formatearDecimal(tamañoEnGB) + " GB";
+        }
+
+    }
+
+    public String formatearDecimal(double número) {
+        DecimalFormat formato = new DecimalFormat("#.##");
+        return formato.format(número);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTree Tree;
     private javax.swing.JButton btnListarArchivosOcultos;
@@ -360,11 +524,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuSalir;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField txtFechaModificacion;
+    private javax.swing.JTextField txtPath;
+    private javax.swing.JTextField txtPermisosEscritura;
+    private javax.swing.JTextField txtPermisosLectura;
+    private javax.swing.JTextField txtRuta;
+    private javax.swing.JTextField txtTamano;
     // End of variables declaration//GEN-END:variables
 }
