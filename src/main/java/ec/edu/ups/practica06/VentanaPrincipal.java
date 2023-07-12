@@ -9,7 +9,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.Clock;
+
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -490,10 +490,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         } else if (tamañoEnBytes < 1024 * 1024 * 1024) {
             double tamañoEnMB = tamañoEnBytes / (1024.0 * 1024);
             return formatearDecimal(tamañoEnMB) + " MB";
-        } else {
-            double tamañoEnGB = tamañoEnBytes / (1024.0 * 1024 * 1024);
-            return formatearDecimal(tamañoEnGB) + " GB";
         }
+        return null;
 
     }
 
