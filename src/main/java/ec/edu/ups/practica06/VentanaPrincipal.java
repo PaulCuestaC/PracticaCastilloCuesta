@@ -432,7 +432,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 String rutaFinal = ruta.substring(1);
                 controladorArchivo.renombrarArchivo(rutaRenombradaFinal, rutaFinal, nombre);
              
-                JOptionPane.showConfirmDialog(this, "Se ha renombrado el archivo a: "+nombre);
+                JOptionPane.showMessageDialog(this, "Se ha renombrado el archivo a: "+nombre);
 
             } else {
                 JOptionPane.showMessageDialog(this, "El archivo no existe");
